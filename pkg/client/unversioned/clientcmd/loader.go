@@ -58,9 +58,9 @@ func currentMigrationRules() map[string]string {
 	oldRecommendedWindowsHomeFile := path.Join(os.Getenv("HOME"), RecommendedHomeDir, RecommendedFileName)
 
 	migrationRules := map[string]string{}
-	migrationRules[RecommendedHomeFile] = oldRecommendedHomeFile
+	migrationRules[oldRecommendedHomeFile] = RecommendedHomeFile
 	if goruntime.GOOS == "windows" {
-		migrationRules[RecommendedHomeFile] = oldRecommendedWindowsHomeFile
+		migrationRules[oldRecommendedWindowsHomeFile] = RecommendedHomeFile
 	}
 	return migrationRules
 }
@@ -238,7 +238,7 @@ func (rules *ClientConfigLoadingRules) Migrate() error {
 		return nil
 	}
 
-	for destination, source := range rules.MigrationRules {
+    for source, destination := range rules.MigrationRules {
 		if _, err := os.Stat(destination); err == nil {
 			// if the destination already exists, do nothing
 			continue
