@@ -55,12 +55,18 @@ var RecommendedSchemaFile = path.Join(homedir.HomeDir(), RecommendedHomeDir, Rec
 // sure existing config files are migrated to their new locations properly.
 func currentMigrationRules() map[string]string {
 	oldRecommendedHomeFile := path.Join(os.Getenv("HOME"), "/.kube/.kubeconfig")
-	oldRecommendedWindowsHomeFile := path.Join(os.Getenv("HOME"), RecommendedHomeDir, RecommendedFileName)
 
 	migrationRules := map[string]string{}
 	migrationRules[oldRecommendedHomeFile] = RecommendedHomeFile
 	if goruntime.GOOS == "windows" {
+        oldRecommendedWindowsHomeFile := path.Join(os.Getenv("HOME"), RecommendedHomeDir, RecommendedFileName)
 		migrationRules[oldRecommendedWindowsHomeFile] = RecommendedHomeFile
+
+		homeDrive, homePath := os.Getenv("HOMEDRIVE"), os.Getenv("HOMEPATH")
+		homeDir := homeDrive + homePath
+
+        preHomeSupportWindowsHomeFile := path.Join(homeDrive + homePath, RecommendedHomeDir, RecommendedFileName)
+        migrationRules[preHomeSupportWindowsHomeFile] = RecommendedHomeFile
 	}
 	return migrationRules
 }
